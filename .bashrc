@@ -108,3 +108,10 @@ alias clip="xclip -sel clip <"
 alias grep="grep --color=auto --exclude-dir={.bzr,.cvs,.hg,.git,.svn}"
 alias ls="ls --color --ignore=lost+found"
 
+
+if [ -e /usr/share/terminfo/x/xterm-256color ]; then
+	export TERM='xterm-256color'
+else
+	export TERM='xterm-color'
+fi
+
