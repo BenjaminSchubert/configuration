@@ -4,7 +4,7 @@ BG1="colour232"
 BG2="colour235"
 BG3="colour238"
 BG4="colour241"
-
+BG5="colour244"
 
 BAD="colour196"
 NEUTRAL="colour231"
@@ -75,12 +75,13 @@ __memory() {
 }
 
 
-date_status="#[fg=${NEUTRAL}] $(date +%k:%M)"
+hour_status="#[fg=${NEUTRAL}] $(date +%k:%M)"
+date_status="#[fg=${NEUTRAL}] $(date +%d/%m/%y) "
 
-status="#[fg=${BG4}]#[bg=${BG4}]$(__cpu)"
-status+="#[fg=${BG3}]#[bg=${BG3}]$(__memory)"
-status+="#[fg=${BG2}]#[bg=${BG2}]$(__batteries)"
-status+="#[fg=${BG1}]#[bg=${BG1}]${date_status}"
-
+status="#[fg=${BG5}]#[bg=${BG5}]$(__cpu)"
+status+="#[fg=${BG4}]#[bg=${BG4}]$(__memory)"
+status+="#[fg=${BG3}]#[bg=${BG3}]$(__batteries)"
+status+="#[fg=${BG2}]#[bg=${BG2}]${date_status}"
+status+="#[fg=${BG1}]#[bg=${BG1}]${hour_status}"
 echo ${status}
 
