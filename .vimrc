@@ -17,3 +17,8 @@ ino jj <esc>
 
 set mouse=a
 
+" Explicitely highlights tabs
+highlight SpecialKey ctermfg=1
+set list
+set listchars=tab:T>
+

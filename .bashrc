@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 if [[ $- != *i* ]]; then
-	return
+    return
 fi
 
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+    . /etc/bashrc
 fi
 
 
@@ -21,62 +21,62 @@ WHITE="\[\e[97m\]"
 
 
 __git_status() {
-	local status="${YELLOW}$(basename $(git rev-parse --show-toplevel))${BLUE}@"
+    local status="${YELLOW}$(basename $(git rev-parse --show-toplevel))${BLUE}@"
 
-	branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-	if [ $? -ne 0 ]; then
-		status+="${RED}INVALID"
-	else
-		status+="${YELLOW}${branch}"
-	fi
+    branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    if [ $? -ne 0 ]; then
+        status+="${RED}INVALID"
+    else
+        status+="${YELLOW}${branch}"
+    fi
 
-	git_path=$(git rev-parse --absolute-git-dir)
-	if [ -d ${git_path}/rebase-apply ]; then
-		status+="${BLUE}(${RED}REBASING${BLUE})"
-	elif [ -f ${git_path}/MERGE_HEAD ]; then
-		status+="${BLUE}(${RED}MERGING${BLUE})"
-	fi
+    git_path=$(git rev-parse --absolute-git-dir)
+    if [ -d ${git_path}/rebase-apply ]; then
+        status+="${BLUE}(${RED}REBASING${BLUE})"
+    elif [ -f ${git_path}/MERGE_HEAD ]; then
+        status+="${BLUE}(${RED}MERGING${BLUE})"
+    fi
 
-	__modified() {
-		changed=$(grep $2 <<< $1 | wc -l)
-		if [ $changed -ne 0 ]; then
-			echo "$3$4$changed${BLUE};"
-		fi
-	}
+    __modified() {
+        changed=$(grep $2 <<< $1 | wc -l)
+        if [ $changed -ne 0 ]; then
+            echo "$3$4$changed${BLUE};"
+        fi
+    }
 
-	changed_files="$(git status --porcelain)"
-	local changes=""
-	# staged
-	changes+=$(__modified "${changed_files}" '^A' ${GREEN} +)
-	# untracked
-	changes+=$(__modified "${changed_files}" '^??' ${YELLOW} -)
-	# changed but unstaged
-	changes+=$(__modified "${changed_files}" '^.M' ${RED} \*)
+    changed_files="$(git status --porcelain)"
+    local changes=""
+    # staged
+    changes+=$(__modified "${changed_files}" '^A' ${GREEN} +)
+    # untracked
+    changes+=$(__modified "${changed_files}" '^??' ${YELLOW} -)
+    # changed but unstaged
+    changes+=$(__modified "${changed_files}" '^.M' ${RED} \*)
 
-	if [ ${#changes} -ne 0 ]; then
-		status+="${BLUE}[${changes: : -1}${BLUE}]"
-	fi
+    if [ ${#changes} -ne 0 ]; then
+        status+="${BLUE}[${changes: : -1}${BLUE}]"
+    fi
 
-	echo ${status}
+    echo ${status}
 }
 
 
 __prompt_command() {
-	local RETURN_CODE=$?
-	local git_status=""
+    local RETURN_CODE=$?
+    local git_status=""
 
-	if [ $RETURN_CODE -ne 0 ]; then
-		return_code="${RED}(${RETURN_CODE})"
-	else
-		return_code="${BLUE}(${RETURN_CODE})"
-	fi
+    if [ $RETURN_CODE -ne 0 ]; then
+        return_code="${RED}(${RETURN_CODE})"
+    else
+        return_code="${BLUE}(${RETURN_CODE})"
+    fi
 
-	git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
-	if [ $? -eq 0 ]; then
-		git_status="$(__git_status)${BLUE}:"
-	fi
+    git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
+    if [ $? -eq 0 ]; then
+        git_status="$(__git_status)${BLUE}:"
+    fi
 
-	PS1="${BOLD}${GREEN}\u${BLUE}@${GREEN}\h${BLUE}:${git_status} ${WHITE}\W ${return_code} ${BLUE}\$${RESET} "
+    PS1="${BOLD}${GREEN}\u${BLUE}@${GREEN}\h${BLUE}:${git_status} ${WHITE}\W ${return_code} ${BLUE}\$${RESET} "
 }
 
 
@@ -97,8 +97,8 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export HISTCONTROL="erasedups"
 
 if [ ! -f ${GPG_AGENT_ENV} ]; then
-	killall gpg-agent 2>/dev/null
-	gpg-agent --daemon --enable-ssh-support > ${GPG_AGENT_ENV}
+    killall gpg-agent 2>/dev/null
+    gpg-agent --daemon --enable-ssh-support > ${GPG_AGENT_ENV}
 fi
 
 source ${GPG_AGENT_ENV}
@@ -106,12 +106,14 @@ source ${GPG_AGENT_ENV}
 
 alias clip="xclip -sel clip <"
 alias grep="grep --color=auto --exclude-dir={.bzr,.cvs,.hg,.git,.svn}"
-alias ls="ls --color --ignore=lost+found"
 
+if [[ $(ls --color >/dev/null 2>/dev/null) -eq 0 ]]; then
+    alias ls="ls --color --ignore=lost+found"
+fi
 
 if [ -e /usr/share/terminfo/x/xterm-256color ]; then
-	export TERM='xterm-256color'
+    export TERM='xterm-256color'
 else
-	export TERM='xterm-color'
+    export TERM='xterm-color'
 fi
 
