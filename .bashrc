@@ -38,7 +38,7 @@ __git_status() {
     fi
 
     __modified() {
-        changed=$(grep $2 <<< $1 | wc -l)
+        changed=$(grep $2 <<< $1 | wc -l | sed "s/[ \t]*//g")
         if [ $changed -ne 0 ]; then
             echo "$3$4$changed${BLUE};"
         fi
@@ -54,7 +54,7 @@ __git_status() {
     changes+=$(__modified "${changed_files}" '^.M' ${RED} \*)
 
     if [ ${#changes} -ne 0 ]; then
-        status+="${BLUE}[${changes: : -1}${BLUE}]"
+        status+="${BLUE}[${changes%?}${BLUE}]"
     fi
 
     echo ${status}
