@@ -107,7 +107,8 @@ source ${GPG_AGENT_ENV}
 alias clip="xclip -sel clip <"
 alias grep="grep --color=auto --exclude-dir={.bzr,.cvs,.hg,.git,.svn}"
 
-if [[ $(ls --color >/dev/null 2>/dev/null) -eq 0 ]]; then
+ls --color >/dev/null 2>/dev/null
+if [ $? -eq 0 ]; then
     alias ls="ls --color --ignore=lost+found"
 fi
 
