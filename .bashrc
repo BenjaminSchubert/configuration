@@ -118,3 +118,6 @@ else
     export TERM='xterm-color'
 fi
 
+if [ -f ~/.bashrc.local ]; then
+    . ~/.bashrc.local
+fi

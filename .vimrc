@@ -22,3 +22,10 @@ highlight SpecialKey ctermfg=1
 set list
 set listchars=tab:T>
 
+" highlight lines of more than 80 chars in red
+highlight Overlength ctermbg=red ctermfg=white
+match Overlength /\%80v.\+/
+
+highlight TrailingWhitespace ctermbg=yellow ctermfg=white
+match TrailingWhitespace /\s\+$/
+
