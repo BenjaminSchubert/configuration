@@ -13,7 +13,7 @@ set backspace=eol,start,indent
 set whichwrap+=<,>h,l
 
 set number
-ino jj <esc>
+ino jk <esc>
 
 set mouse=a
 
