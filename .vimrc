@@ -1,5 +1,7 @@
 syntax on
 
+set et
+set ru
 set nocompatible
 filetype off
 
