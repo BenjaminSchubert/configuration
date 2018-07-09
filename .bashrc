@@ -62,21 +62,30 @@ __git_status() {
 
 
 __prompt_command() {
-    local RETURN_CODE=$?
-    local git_status=""
+    local RETURN_CODES=("${PIPESTATUS[@]}")
 
-    if [ $RETURN_CODE -ne 0 ]; then
-        return_code="${RED}(${RETURN_CODE})"
-    else
-        return_code="${BLUE}(${RETURN_CODE})"
-    fi
+    local git_status=""
+    local return_status=""
 
     git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
     if [ $? -eq 0 ]; then
         git_status="$(__git_status)${BLUE}:"
     fi
 
-    PS1="${BOLD}${GREEN}\u${BLUE}@${GREEN}\h${BLUE}:${git_status} ${WHITE}\W ${return_code} ${BLUE}\$${RESET} "
+    local last_successful=${BLUE}
+
+    for code in "${RETURN_CODES[@]}"; do
+        if [ ${code} -ne 0 ]; then
+            return_status+="${RED}"
+            last_successful="${RED}"
+        else
+            return_status+="${BLUE}"
+        fi
+        return_status+="${code} "
+    done
+
+    return_status="${last_successful}(${return_status%?}${last_successful})"
+    PS1="${BOLD}${GREEN}\u${BLUE}@${GREEN}\h${BLUE}:${git_status} ${WHITE}\W ${return_status} ${BLUE}\$${RESET} "
 }
 
 
