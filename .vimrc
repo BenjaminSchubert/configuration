@@ -9,7 +9,8 @@ filetype plugin indent on
 
 colorscheme elflord
 
-set tabstop=4
+set tabstop=16
+set softtabstop=4
 
 set backspace=eol,start,indent
 set whichwrap+=<,>h,l
@@ -23,11 +24,11 @@ set mouse=a
 highlight SpecialKey ctermfg=1
 set list
 set listchars=tab:T>
+" highlight trailing whitespace in yellow
+highlight TrailingWhitespace ctermbg=yellow ctermfg=black
+call matchadd('TrailingWhitespace', '\s\+$')
 
 " highlight lines of more than 80 chars in red
-highlight Overlength ctermbg=red ctermfg=white
-match Overlength /\%80v.\+/
-
-highlight TrailingWhitespace ctermbg=yellow ctermfg=white
-match TrailingWhitespace /\s\+$/
+highlight OverLength ctermbg=red ctermfg=white
+call matchadd('OverLength', '\%81v.\+')
 
