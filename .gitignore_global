@@ -1,5 +1,7 @@
+# Editor files
 **/.vscode
 **/*.swp*
 **/.idea
-**/.venv
-*.local
+
+# Python
+.mypy_cache
