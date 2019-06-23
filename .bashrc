@@ -144,4 +144,4 @@ fi
 ############
 
 export WORKON_HOME=~/.virtualenvs/
-. virtualenvwrapper-3.sh
+. /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh
