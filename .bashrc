@@ -9,15 +9,15 @@ if [ -f /etc/bashrc ]; then
 fi
 
 
-RESET="\[\e[0m\]"
-BOLD="\[\e[1m\]"
+RESET="\\[\\e[0m\\]"
+BOLD="\\[\\e[1m\\]"
 
-RED="\[\e[31m\]"
-GREEN="\[\e[32m\]"
-YELLOW="\[\e[33m\]"
-BLUE="\[\e[34m\]"
-MAGENTA="\[\e[35m\]"
-WHITE="\[\e[97m\]"
+RED="\\[\\e[31m\\]"
+GREEN="\\[\\e[32m\\]"
+YELLOW="\\[\\e[33m\\]"
+BLUE="\\[\\e[34m\\]"
+MAGENTA="\\[\\e[35m\\]"
+WHITE="\\[\\e[97m\\]"
 
 
 ####################
@@ -25,25 +25,26 @@ WHITE="\[\e[97m\]"
 ####################
 
 __git_status() {
-    local status="${YELLOW}$(basename $(git rev-parse --show-toplevel))${BLUE}@"
+    local status
 
-    branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-    if [ $? -ne 0 ]; then
+    status="${YELLOW}$(basename "$(git rev-parse --show-toplevel)")${BLUE}@"
+
+    if ! branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"; then
         status+="${RED}INVALID"
     else
         status+="${YELLOW}${branch}"
     fi
 
     git_path=$(git rev-parse --absolute-git-dir)
-    if [ -d ${git_path}/rebase-apply ]; then
+    if [ -d "${git_path}/rebase-apply" ]; then
         status+="${BLUE}(${RED}REBASING${BLUE})"
-    elif [ -f ${git_path}/MERGE_HEAD ]; then
+    elif [ -f "${git_path}/MERGE_HEAD" ]; then
         status+="${BLUE}(${RED}MERGING${BLUE})"
     fi
 
     __modified() {
-        changed=$(grep $2 <<< $1 | wc -l | sed "s/[ \t]*//g")
-        if [ $changed -ne 0 ]; then
+        changed=$(grep -c "${2}" <<< "${1}" | sed "s/[ \\t]*//g")
+        if [ "${changed}" -ne 0 ]; then
             echo "$3$4$changed${BLUE};"
         fi
     }
@@ -51,17 +52,17 @@ __git_status() {
     changed_files="$(git status --porcelain)"
     local changes=""
     # staged
-    changes+=$(__modified "${changed_files}" '^A' ${GREEN} +)
+    changes+=$(__modified "${changed_files}" '^A' "${GREEN}" +)
     # untracked
-    changes+=$(__modified "${changed_files}" '^??' ${YELLOW} -)
+    changes+=$(__modified "${changed_files}" '^??' "${YELLOW}" -)
     # changed but unstaged
-    changes+=$(__modified "${changed_files}" '^.M' ${RED} \*)
+    changes+=$(__modified "${changed_files}" '^.M' "${RED}" \*)
 
     if [ ${#changes} -ne 0 ]; then
         status+="${BLUE}[${changes%?}${BLUE}]"
     fi
 
-    echo ${status}
+    echo "${status}"
 }
 
 
@@ -70,7 +71,7 @@ __retcode_status() {
     local last_successful=${BLUE}
 
     for code in "${@}"; do
-        if [ ${code} -ne 0 ]; then
+        if [ "${code}" -ne 0 ]; then
             return_status+="${RED}"
             last_successful="${RED}"
         else
@@ -84,8 +85,8 @@ __retcode_status() {
 
 
 __venv_status() {
-    if [ ${VIRTUAL_ENV} ]; then
-        echo "${BOLD}${MAGENTA}($(basename ${VIRTUAL_ENV}))${RESET} "
+    if [ "${VIRTUAL_ENV}" ]; then
+        echo "${BOLD}${MAGENTA}($(basename "${VIRTUAL_ENV}"))${RESET} "
     fi
 }
 
@@ -96,12 +97,11 @@ __prompt_command() {
     local git_status=""
 
     # Set git status
-    git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
-    if [ $? -eq 0 ]; then
+    if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
         git_status="$(__git_status)${BLUE}:"
     fi
 
-    PS1="$(__venv_status)${BOLD}${GREEN}\u${BLUE}@${GREEN}\h${BLUE}:${git_status} ${WHITE}\W $(__retcode_status ${RETURN_CODES[@]}) ${BLUE}\$${RESET} "
+    PS1="$(__venv_status)${BOLD}${GREEN}\\u${BLUE}@${GREEN}\\h${BLUE}:${git_status} ${WHITE}\\W $(__retcode_status "${RETURN_CODES[@]}") ${BLUE}\$${RESET} "
 }
 
 
@@ -123,8 +123,7 @@ export HISTCONTROL="erasedups"
 alias clip="xclip -sel clip <"
 alias grep="grep --color=auto --exclude-dir={.bzr,.cvs,.hg,.git,.svn}"
 
-ls --color >/dev/null 2>/dev/null
-if [ $? -eq 0 ]; then
+if ls --color >/dev/null 2>/dev/null; then
     alias ls="ls --color --ignore=lost+found"
 fi
 
@@ -147,5 +146,7 @@ fi
 ## Python ##
 ############
 
-export WORKON_HOME=~/.virtualenvs/
-. /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh
+if [ -f /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh ]; then
+    export WORKON_HOME=~/.virtualenvs/
+    . /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh
+fi
